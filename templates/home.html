@@ -1,0 +1,126 @@
+{% extends 'base.html' %}
+
+{% block title %}Главная - TechStore{% endblock %}
+{% load static %}
+{% block content %}
+<!-- Герой секция -->
+<div class="hero-section bg-dark text-white rounded p-5 mb-5">
+    <div class="row align-items-center">
+        <div class="col-lg-6">
+            <h1 class="display-4 fw-bold mb-4">Лучшие компьютерные комплектующие</h1>
+            <p class="lead mb-4">
+                Видеокарты, процессоры, материнские платы, оперативная память
+                и многое другое по лучшим ценам!
+            </p>
+            <a href="{% url 'products' %}" class="btn btn-light btn-lg">
+                <i class="fas fa-shopping-cart me-2"></i>Перейти в каталог
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Популярные категории -->
+<section class="mb-5">
+    <h2 class="mb-4">Популярные категории</h2>
+    <div class="row">
+        {% for category in categories %}
+        <div class="col-md-3 mb-4">
+            <a href="{% url 'products' %}?category={{ category.id }}" class="product-link">
+                <div class="card category-card h-100 text-center">
+                    <div class="card-body">
+                        <i class="fas fa-microchip fa-3x text-primary mb-3"></i>
+                        <h5 class="card-title">{{ category.name }}</h5>
+                        <p class="text-muted">
+                            {{ category.product_count }} товаров
+                        </p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center">
+            <p class="text-muted">Категории пока не добавлены</p>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- Популярные товары -->
+<section class="mb-5">
+    <h2 class="mb-4">Популярные товары</h2>
+    <div class="row">
+        {% for product in products %}
+        <div class="col-md-3 mb-4">
+            <a href="{% url 'product_detail' product.id %}" class="product-link">
+                <div class="card product-card h-100">
+                    {% if product.images.all %}
+                    <img src="{{ product.images.first.image.url }}"
+                         class="card-img-top product-image" alt="{{ product.name }}">
+                    {% else %}
+                    <img src="https://via.placeholder.com/300x200/cccccc/666666?text=TechStore"
+                         class="card-img-top product-image" alt="{{ product.name }}">
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">{{ product.name|truncatechars:50 }}</h5>
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <span class="price">{{ product.price }} ₽</span>
+                            {% if product.quantity > 0 %}
+                            <span class="badge bg-success">В наличии</span>
+                            {% else %}
+                            <span class="badge bg-danger">Нет в наличии</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="card-footer bg-transparent border-top-0">
+                        <small class="text-muted">
+                            <i class="fas fa-tag me-1"></i>{{ product.category.name }}
+                        </small>
+                    </div>
+                </div>
+            </a>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center py-5">
+            <i class="fas fa-box-open fa-4x text-muted mb-3"></i>
+            <h4>Товары не найдены</h4>
+            <p class="text-muted">Пока нет товаров в каталоге</p>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- Почему выбирают нас -->
+<section class="mb-5">
+    <h2 class="mb-4">Почему выбирают нас</h2>
+    <div class="row text-center">
+        <div class="col-md-3 mb-4">
+            <div class="p-4 border rounded h-100">
+                <i class="fas fa-shipping-fast fa-2x text-primary mb-3"></i>
+                <h5>Быстрая доставка</h5>
+                <p class="text-muted">Доставка в любой город России</p>
+            </div>
+        </div>
+        <div class="col-md-3 mb-4">
+            <div class="p-4 border rounded h-100">
+                <i class="fas fa-shield-alt fa-2x text-success mb-3"></i>
+                <h5>Гарантия 3 года</h5>
+                <p class="text-muted">На все товары предоставляем гарантию</p>
+            </div>
+        </div>
+        <div class="col-md-3 mb-4">
+            <div class="p-4 border rounded h-100">
+                <i class="fas fa-headset fa-2x text-info mb-3"></i>
+                <h5>Техподдержка</h5>
+                <p class="text-muted">Поможем с выбором и установкой</p>
+            </div>
+        </div>
+        <div class="col-md-3 mb-4">
+            <div class="p-4 border rounded h-100">
+                <i class="fas fa-undo fa-2x text-warning mb-3"></i>
+                <h5>Легкий возврат</h5>
+                <p class="text-muted">Возврат товара в течение 14 дней</p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

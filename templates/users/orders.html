@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block title %}Мои заказы - TechStore{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mb-4">Мои заказы</h1>
+
+    {% if orders %}
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>Номер заказа</th>
+                    <th>Дата</th>
+                    <th>Статус</th>
+                    <th>Сумма</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                <tr>
+                    <td>
+                        <!-- Номер заказа как ссылка на детальную страницу -->
+                        <a href="{% url 'order_detail' order.id %}" class="text-decoration-none order-link">
+                            <strong>{{ order.order_number }}</strong>
+                        </a>
+                    </td>
+                    <td>{{ order.created_at|date:"d.m.Y H:i" }}</td>
+                    <td>
+                        {% if order.status == 'pending' %}
+                        <span class="badge bg-warning">В обработке</span>
+                        {% elif order.status == 'processing' %}
+                        <span class="badge bg-info">В сборке</span>
+                        {% elif order.status == 'shipped' %}
+                        <span class="badge bg-primary">Отправлен</span>
+                        {% elif order.status == 'delivered' %}
+                        <span class="badge bg-success">Доставлен</span>
+                        {% elif order.status == 'cancelled' %}
+                        <span class="badge bg-danger">Отменен</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <strong>{{ order.total_price }} ₽</strong>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="text-center py-5">
+        <i class="fas fa-shopping-bag fa-4x text-muted mb-3"></i>
+        <h4>У вас пока нет заказов</h4>
+        <p class="text-muted mb-4">Совершите первую покупку!</p>
+        <a href="{% url 'products' %}" class="btn btn-primary">
+            <i class="fas fa-shopping-cart me-2"></i>Перейти к покупкам
+        </a>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+.order-link {
+    color: #0d6efd;
+    transition: color 0.2s;
+}
+
+.order-link:hover {
+    color: #0a58ca;
+    text-decoration: underline;
+}
+</style>
+{% endblock %}

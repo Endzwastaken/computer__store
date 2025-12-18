@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ product.name }} - TechStore{% endblock %}
+
+{% block content %}
+<div class="container">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}">Главная</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'products' %}">Каталог</a></li>
+            <li class="breadcrumb-item active">{{ product.name }}</li>
+        </ol>
+    </nav>
+
+    <div class="row">
+        <!-- Изображения -->
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-body text-center">
+                    {% if product.images.all %}
+                    <img src="{{ product.images.first.image.url }}"
+                         class="img-fluid rounded" alt="{{ product.name }}"
+                         style="max-height: 400px;">
+                    {% else %}
+                    <img src="https://via.placeholder.com/500x400/cccccc/666666?text=No+Image"
+                         class="img-fluid rounded" alt="{{ product.name }}">
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Информация -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h1 class="h3">{{ product.name }}</h1>
+
+                    <div class="mb-3">
+                        <span class="badge bg-primary">{{ product.category.name }}</span>
+                        <span class="badge bg-secondary ms-2">{{ product.manufacturer.name }}</span>
+                    </div>
+
+                    <h3 class="text-success mb-4">{{ product.price }} ₽</h3>
+
+                    <div class="mb-4">
+                        <h5>Описание</h5>
+                        <p>{{ product.description }}</p>
+                    </div>
+
+                    <!-- Характеристики -->
+                    {% if product.specifications.all %}
+                    <div class="mb-4">
+                        <h5>Характеристики</h5>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th style="width: 40%;">Характеристика</th>
+                                        <th style="width: 60%;">Значение</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for spec in product.specifications.all %}
+                                    <tr>
+                                        <td class="fw-semibold">{{ spec.name }}</td>
+                                        <td>{{ spec.value }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Добавление в корзину -->
+                    {% if product.quantity > 0 %}
+                    <form method="post" action="{% url 'add_to_cart' product.id %}">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label class="form-label">Количество:</label>
+                            <div class="input-group" style="width: 150px;">
+                                <input type="number" name="quantity" value="1" min="1"
+                                       max="{{ product.quantity }}" class="form-control">
+                                <span class="input-group-text">
+                                    Доступно: {{ product.quantity }}
+                                </span>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-lg w-100">
+                            <i class="fas fa-cart-plus me-2"></i>Добавить в корзину
+                        </button>
+                    </form>
+                    {% else %}
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        Товар временно отсутствует
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

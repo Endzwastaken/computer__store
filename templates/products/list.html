@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+
+{% block title %}Каталог товаров - TechStore{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mb-4">Каталог товаров</h1>
+
+    <div class="row">
+        <!-- Фильтры -->
+        <div class="col-md-3">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Фильтры</h5>
+                </div>
+                <div class="card-body">
+                    <h6>Категории</h6>
+                    <div class="mb-3">
+                        <a href="{% url 'products' %}" class="d-block mb-1">
+                            Все товары
+                        </a>
+                        {% for category in categories %}
+                        <a href="?category={{ category.id }}" class="d-block mb-1">
+                            {{ category.name }} ({{ category.products.count }})
+                        </a>
+                        {% endfor %}
+                    </div>
+
+                    <h6>Цена</h6>
+                    <form method="get" class="mb-3">
+                        <div class="row g-2">
+                            <div class="col">
+                                <input type="number" name="min_price" placeholder="От"
+                                       class="form-control" value="{{ request.GET.min_price }}">
+                            </div>
+                            <div class="col">
+                                <input type="number" name="max_price" placeholder="До"
+                                       class="form-control" value="{{ request.GET.max_price }}">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-sm w-100 mt-2">
+                            Применить
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Товары -->
+        <div class="col-md-9">
+            <!-- Поиск -->
+            <form method="get" class="mb-4">
+                <div class="input-group">
+                    <input type="text" class="form-control" name="search"
+                           placeholder="Поиск товаров..." value="{{ request.GET.search|default:'' }}">
+                    <button class="btn btn-primary" type="submit">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </form>
+
+            <!-- Результаты -->
+            <div class="row">
+                {% for product in products %}
+                <div class="col-md-4 mb-4">
+                    <a href="{% url 'product_detail' product.id %}" class="product-link">
+                        <div class="card product-card h-100">
+                            {% if product.images.all %}
+                            <img src="{{ product.images.first.image.url }}"
+                                 class="card-img-top product-image" alt="{{ product.name }}">
+                            {% else %}
+                            <img src="https://via.placeholder.com/300x200/cccccc/666666?text=TechStore"
+                                 class="card-img-top product-image" alt="{{ product.name }}">
+                            {% endif %}
+                            <div class="card-body">
+                                <h5 class="card-title">{{ product.name|truncatechars:50 }}</h5>
+                                <p class="card-text text-muted">
+                                    {{ product.description|truncatechars:80 }}
+                                </p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="price fw-bold">{{ product.price }} ₽</span>
+                                    {% if product.quantity > 0 %}
+                                    <span class="badge bg-success">В наличии</span>
+                                    {% else %}
+                                    <span class="badge bg-danger">Нет в наличии</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <small class="text-muted">
+                                    <i class="fas fa-tag me-1"></i>{{ product.category.name }}
+                                </small>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                {% empty %}
+                <div class="col-12 text-center py-5">
+                    <i class="fas fa-search fa-4x text-muted mb-3"></i>
+                    <h4>Товары не найдены</h4>
+                    <p class="text-muted">Попробуйте изменить параметры поиска</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

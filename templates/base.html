@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}TechStore - Магазин компьютерных комплектующих{% endblock %}</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/static/css/style.css">
+
+    {% block extra_css %}{% endblock %}
+
+</head>
+<body>
+    <div class="wrapper"> <!-- Обертка для контента -->
+        <!-- Навигация -->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container">
+                <a class="navbar-brand" href="{% url 'home' %}">
+                    <i class="fas fa-desktop me-2"></i>TechStore
+                </a>
+
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#navbarContent">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarContent">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'home' %}">Главная</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'products' %}">Каталог</a>
+                        </li>
+                    </ul>
+
+                    <form class="d-flex me-3" action="{% url 'products' %}" method="get">
+                        <input class="form-control me-2" type="search" name="search"
+                               placeholder="Поиск товаров...">
+                        <button class="btn btn-outline-light" type="submit">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </form>
+
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'cart' %}">
+                                <i class="fas fa-shopping-cart"></i> Корзина
+                                {% if cart_items_count > 0 %}
+                                <span class="badge bg-danger">{{ cart_items_count }}</span>
+                                {% endif %}
+                            </a>
+                        </li>
+
+                        {% if user.is_authenticated %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button"
+                               data-bs-toggle="dropdown">
+                                <i class="fas fa-user"></i> {{ user.username }}
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="{% url 'profile' %}">Профиль</a></li>
+                                <li><a class="dropdown-item" href="{% url 'orders_list' %}">Мои заказы</a></li>
+                                {% if user.is_staff %}
+                                <li><a class="dropdown-item" href="/admin/">Админ-панель</a></li>
+                                {% endif %}
+                                <li><a class="dropdown-item" href="{% url 'logout' %}">Выйти</a></li>
+                            </ul>
+                        </li>
+                        {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'login' %}">Войти</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="btn btn-outline-light ms-2" href="{% url 'register' %}">
+                                Регистрация
+                            </a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Уведомления -->
+        {% if messages %}
+        <div class="container mt-3">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Основной контент -->
+        <main class="container my-4 content"> <!-- Добавлен класс content -->
+            {% block content %}
+            {% endblock %}
+        </main>
+
+        <!-- Футер -->
+        <footer class="footer bg-dark text-light py-4"> <!-- Убран mt-auto -->
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-4">
+                        <h5><i class="fas fa-desktop me-2"></i>TechStore</h5>
+                        <p>Магазин компьютерных комплектующих.</p>
+                    </div>
+                    <div class="col-md-4">
+                        <h5>Контакты</h5>
+                        <p><i class="fas fa-phone me-2"></i> +7 (999) 999-99-99</p>
+                        <p><i class="fas fa-envelope me-2"></i> example@example.ru</p>
+                    </div>
+                    <div class="col-md-4">
+                        <h5>Часы работы</h5>
+                        <p>Пн-Пт: 9:00 - 20:00</p>
+                        <p>Сб-Вс: 10:00 - 18:00</p>
+                    </div>
+                </div>
+                <hr class="bg-light">
+                <div class="text-center">
+                    <p>&copy; 2024 TechStore. Учебный проект.</p>
+                </div>
+            </div>
+        </footer>
+    </div> <!-- Закрытие wrapper -->
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/static/js/main.js"></script>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
