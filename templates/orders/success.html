@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block title %}Заказ успешно оформлен - TechStore{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card text-center">
+                <div class="card-body py-5">
+                    <i class="fas fa-check-circle fa-5x text-success mb-4"></i>
+                    <h1 class="mb-4">Заказ успешно оформлен!</h1>
+
+                    <div class="alert alert-success mb-4">
+                        <h5>Номер вашего заказа: <strong>{{ order.order_number }}</strong></h5>
+                        <p class="mb-0">Мы отправили подтверждение на email: {{ order.email }}</p>
+                    </div>
+
+                    <div class="card mb-4">
+                        <div class="card-body text-start">
+                            <h5 class="card-title mb-3">Информация о заказе</h5>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p><strong>Статус:</strong>
+                                        <span class="badge bg-primary">{{ order.get_status_display }}</span>
+                                    </p>
+                                    <p><strong>Способ оплаты:</strong>
+                                        {{ order.get_payment_method_display }}</p>
+                                    <p><strong>Сумма заказа:</strong> {{ order.total_price }} ₽</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p><strong>Адрес доставки:</strong> {{ order.shipping_address }}</p>
+                                    <p><strong>Телефон:</strong> {{ order.phone }}</p>
+                                    <p><strong>Email:</strong> {{ order.email }}</p>
+                                </div>
+                            </div>
+
+                            {% if order.comment %}
+                            <p><strong>Комментарий:</strong> {{ order.comment }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="d-grid gap-3">
+                        <a href="{% url 'orders_list' %}" class="btn btn-primary btn-lg">
+                            <i class="fas fa-history me-2"></i>Мои заказы
+                        </a>
+                        <a href="{% url 'products' %}" class="btn btn-outline-primary">
+                            <i class="fas fa-shopping-cart me-2"></i>Продолжить покупки
+                        </a>
+                        <a href="{% url 'home' %}" class="btn btn-outline-secondary">
+                            <i class="fas fa-home me-2"></i>На главную
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

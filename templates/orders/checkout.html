@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+
+{% block title %}Оформление заказа - TechStore{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mb-4">Оформление заказа</h1>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title mb-4">Контактная информация</h5>
+
+                    <form method="post">
+                        {% csrf_token %}
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Имя *</label>
+                                <input type="text" name="first_name" class="form-control"
+                                       value="{{ user.first_name }}" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Фамилия *</label>
+                                <input type="text" name="last_name" class="form-control"
+                                       value="{{ user.last_name }}" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Телефон *</label>
+                            <input type="tel" name="phone" class="form-control"
+                                   value="{{ user.phone }}" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Email *</label>
+                            <input type="email" name="email" class="form-control"
+                                   value="{{ user.email }}" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Адрес доставки *</label>
+                            <textarea name="shipping_address" class="form-control"
+                                      rows="3" required>{{ user.address }}</textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Способ оплаты *</label>
+                            <select name="payment_method" class="form-select" required>
+                                <option value="card">Карта онлайн</option>
+                                <option value="cash">Наличные при получении</option>
+                                <option value="bank_transfer">Банковский перевод</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label">Комментарий к заказу</label>
+                            <textarea name="comment" class="form-control" rows="2"></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-success btn-lg w-100">
+                            <i class="fas fa-check me-2"></i>Подтвердить заказ
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Ваш заказ</h5>
+
+                    <div class="mb-3">
+                        {% for item in cart.items.all %}
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>{{ item.product.name }} × {{ item.quantity }}</span>
+                            <span>{{ item.total_price }} ₽</span>
+                        </div>
+                        {% endfor %}
+
+                        <hr>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Товары:</span>
+                            <span>{{ cart.total_price }} ₽</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Доставка:</span>
+                            <span>500 ₽</span>
+                        </div>
+                        <hr>
+                        <div class="d-flex justify-content-between">
+                            <strong>Итого:</strong>
+                            <strong>{{ cart.total_price|add:500 }} ₽</strong>
+                        </div>
+                    </div>
+
+                    <a href="{% url 'cart' %}" class="btn btn-outline-secondary w-100">
+                        <i class="fas fa-arrow-left me-2"></i>Вернуться в корзину
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

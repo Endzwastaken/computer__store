@@ -91,22 +91,33 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 # НАСТРОЙКИ БАЗЫ ДАННЫХ POSTGRESQL
+DATABASE_URL = os.environ.get('DATABASE_URL')
+if DATABASE_URL:
+   DATABASES = {
+       'default': dj_database_url.config(
+           engine='django.db.backends.postgresql',
+           default=DATABASE_URL,
+           conn_max_age=600,
+           conn_health_checks=True,
+           ssl_require=True,
+       )
+   }
 
- DATABASES = {
-     'default': {
-         'ENGINE': 'django.db.backends.postgresql',
-         'NAME': 'computer_store_db',
-         'USER': 'store_user',
-         'PASSWORD': 'qwerty123456',
-         'HOST': 'localhost',
-         'PORT': '5432',
-         'OPTIONS': {
-             'isolation_level': psycopg2.extensions.ISOLATION_LEVEL_READ_COMMITTED,
-         },
-         'CONN_MAX_AGE': 60,
-         'ATOMIC_REQUESTS': False,
-     }
- }
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'computer_store_db',
+#         'USER': 'store_user',
+#         'PASSWORD': '3g9Juyp4uev2YHMFyu8HHdzAZpMi2m6f',
+#         'HOST': 'localhost',
+#         'PORT': '5432',
+#         'OPTIONS': {
+#             'isolation_level': psycopg2.extensions.ISOLATION_LEVEL_READ_COMMITTED,
+#         },
+#         'CONN_MAX_AGE': 60,
+#         'ATOMIC_REQUESTS': False,
+#     }
+# }
 
 
 # Password validation
